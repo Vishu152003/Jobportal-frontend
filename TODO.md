@@ -1,0 +1,1 @@
+# TODO: Fix WebSocket URL in Chat.jsx\n\n- [ ] Step 1: Edit src/pages/Chat.jsx to replace wsUrl construction with exact WS_URL logic from task\n- [ ] Step 2: Verify WebSocket connects (check browser console)\n- [ ] Step 3: Test chat functionality\n- [ ] Step 4: Complete task\n

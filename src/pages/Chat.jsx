@@ -33,8 +33,12 @@ const Chat = () => {
   const isRecruiter = role === 'recruiter';
 
   const connectWebSocket = useCallback(() => {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.hostname}:8000/ws/chat/`;
+    const WS_URL =
+      window.location.hostname === "localhost"
+        ? "ws://localhost:8000/ws/chat/"
+        : "wss://job-portal-backend-7e27.onrender.com/ws/chat/";
+
+    const wsUrl = WS_URL;
     
     const token = localStorage.getItem('token');
     if (!token) {
@@ -43,7 +47,7 @@ const Chat = () => {
     }
 
     try {
-      const ws = new WebSocket(`${wsUrl}?token=${token}`);
+      const ws = new WebSocket(`${WS_URL}?token=${token}`);
       
       ws.onopen = () => {
         console.log('WebSocket connected');
