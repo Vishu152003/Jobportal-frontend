@@ -8,7 +8,9 @@ const RecruiterDashboard = () => {
   const { user, logout } = useAuth();
   const [myJobs, setMyJobs] = useState([]);
   const [allApplicants, setAllApplicants] = useState([]);
-  const [myIdeas, setMyIdeas] = useState([]);
+  const [stats, setStats] = useState({ hired: 0, total: 0, pending: 0, shortlisted: 0, rejected: 0, offered: 0 });
+  const [myIdeas, setMyIdeas] = useState([]);  
+
   const [allIdeasCount, setAllIdeasCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -79,11 +81,31 @@ const RecruiterDashboard = () => {
   const [editingCompany, setEditingCompany] = useState(false);
   const navigate = useNavigate();
 
+  const fetchStats = async () => {
+    try {
+      const response = await applicationsAPI.stats();
+      setStats(response.data);
+    } catch (err) {
+      console.error('Error fetching stats:', err);
+    }
+  };
+
   useEffect(() => {
     fetchMyJobs();
+    fetchStats();
     fetchCompanyData();
     fetchMyIdeas();
     fetchAllIdeasCount();
+  }, []);
+
+
+  // Realtime polling for stats - lighter endpoint
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 10000); // Poll every 10 seconds - lighter than full applicants
+
+    return () => clearInterval(interval);
   }, []);
 
   // Dark mode effect
@@ -323,7 +345,8 @@ const RecruiterDashboard = () => {
   const handleUpdateStatus = async (appId, status) => {
     try {
       await applicationsAPI.updateStatus(appId, status);
-      fetchMyJobs();
+      fetchStats(); // Update stats immediately
+      fetchMyJobs(); // Also refetch full list
     } catch (err) {
       console.error('Error updating status:', err);
       alert('Failed to update status');
@@ -337,6 +360,7 @@ const RecruiterDashboard = () => {
   const shortlistedCandidates = allApplicants.filter(a => a.status === 'interview' || a.status === 'accepted' || a.status === 'offered').length;
   const rejectedCandidates = allApplicants.filter(a => a.status === 'rejected').length;
   const pendingApplications = allApplicants.filter(a => !a.status || a.status === 'pending' || a.status === 'applied').length;
+  const hiredCandidates = stats.hired || stats.offered || 0;
 
 const menuItems = [
     { id: 'overview', label: 'Dashboard', icon: '📊' },
@@ -446,7 +470,7 @@ const menuItems = [
         {activeTab === 'overview' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-8">
               <div className={`${cardClass} rounded-2xl shadow-lg p-5 border-l-4 border-emerald-500`}>
                 <div className="flex items-center justify-between">
                   <div>
@@ -490,6 +514,15 @@ const menuItems = [
                     <p className="text-3xl font-bold text-yellow-600">{totalIdeas}</p>
                   </div>
                   <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center text-2xl">💡</div>
+                </div>
+              </div>
+              <div className={`${cardClass} rounded-2xl shadow-lg p-5 border-l-4 border-green-500`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className={`text-sm ${textMuted}`}>Hired</p>
+                    <p className="text-3xl font-bold text-green-600">{hiredCandidates}</p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-2xl">👨‍💼</div>
                 </div>
               </div>
             </div>

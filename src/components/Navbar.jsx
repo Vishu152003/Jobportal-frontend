@@ -142,7 +142,13 @@ const Navbar = () => {
                           notifications.slice(0, 10).map((notification) => (
                             <div 
                               key={notification.id}
-                              onClick={() => markAsRead(notification.id)}
+                              onClick={() => {
+                                markAsRead(notification.id);
+                                if (notification.link) {
+                                  navigate(notification.link);
+                                }
+                                setNotificationOpen(false);
+                              }}
                               className={`p-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${!notification.is_read ? 'bg-violet-50 dark:bg-violet-900/20' : ''}`}
                             >
                               <div className="flex items-start space-x-3">
@@ -200,7 +206,7 @@ const Navbar = () => {
                         <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full capitalize">{user?.role}</span>
                       </div>
                       <div className="p-2">
-                        <Link to="/dashboard" onClick={() => setUserDropdownOpen(false)} className="flex items-center space-x-2 px-3 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><span>📊</span><span>Dashboard</span></Link>
+{userRole !== 'recruiter' && <Link to="/dashboard" onClick={() => setUserDropdownOpen(false)} className="flex items-center space-x-2 px-3 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><span>📊</span><span>Dashboard</span></Link>}
                         {(userRole === 'recruiter' || userRole === 'admin') && <Link to="/recruiter" onClick={() => setUserDropdownOpen(false)} className="flex items-center space-x-2 px-3 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><span>🏢</span><span>Recruiter</span></Link>}
                         {userRole === 'admin' && <Link to="/admin" onClick={() => setUserDropdownOpen(false)} className="flex items-center space-x-2 px-3 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><span>👑</span><span>Admin</span></Link>}
                         {userRole !== 'recruiter' && <Link to="/applications" onClick={() => setUserDropdownOpen(false)} className="flex items-center space-x-2 px-3 py-2 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><span>📋</span><span>My Applications</span></Link>}
@@ -236,7 +242,7 @@ const Navbar = () => {
                 <button onClick={() => setDarkMode(!darkMode)} className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><span className="flex items-center space-x-2"><span>{darkMode ? '☀️' : '🌙'}</span><span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span></span></button>
                 {isAuthenticated ? (
                   <>
-                    <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><span>📊</span><span>Dashboard</span></Link>
+{userRole !== 'recruiter' && <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><span>📊</span><span>Dashboard</span></Link>}
                     {(userRole === 'recruiter' || userRole === 'admin') && <Link to="/recruiter" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><span>🏢</span><span>Recruiter</span></Link>}
                     {userRole === 'admin' && <Link to="/admin" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><span>👑</span><span>Admin</span></Link>}
                     {userRole !== 'recruiter' && <Link to="/applications" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><span>📋</span><span>My Applications</span></Link>}

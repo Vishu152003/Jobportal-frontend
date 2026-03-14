@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { jobsAPI, applicationsAPI, chatAPI } from '../services/api';
+import { jobsAPI, applicationsAPI, chatAPI, profileAPI } from '../services/api';
 
 const JobApplicants = () => {
   const { jobId } = useParams();
@@ -261,12 +261,33 @@ const JobApplicants = () => {
                           <span className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${statusColors[app.status] || statusColors.pending}`}>
                             {getStatusIcon(app.status)} {app.status || 'Pending'}
                           </span>
-                          <button
-                            onClick={() => setSelectedApplicant(app)}
-                            className="px-4 py-2 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-xl font-medium hover:bg-violet-200"
-                          >
-                            View Details
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setSelectedApplicant(app)}
+                              className="flex-1 px-4 py-2 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-xl font-medium hover:bg-violet-200"
+                            >
+                              View Details
+                            </button>
+                            {app.seeker?.profile_id && (
+                              <button
+                                onClick={async () => {
+                                  try {
+                                await profileAPI.getProfileDetail(app.seeker.profile_id);
+                                    console.log('Profile view triggered for profile:', app.seeker.profile_id);
+                                    alert('Profile viewed! Check jobseeker dashboard - profile_views incremented.');
+                                  } catch (err) {
+                                    console.error('Profile view error:', err);
+                                    alert('Error viewing profile');
+                                  }
+                                }}
+                                className="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl font-medium hover:bg-blue-200 flex items-center gap-1"
+                              >
+                                👁️ View Profile
+                              </button>
+                            )}
+
+                          </div>
+
                         </div>
                       </div>
                     </motion.div>

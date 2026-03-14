@@ -88,6 +88,16 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  const deleteNotification = async (id) => {
+    try {
+      await notificationAPI.deleteNotification(id);
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+
   const value = {
     notifications,
     unreadCount,
@@ -97,6 +107,7 @@ export const NotificationProvider = ({ children }) => {
     markAsRead,
     markAllAsRead,
     clearAll,
+    deleteNotification,
   };
 
   return (

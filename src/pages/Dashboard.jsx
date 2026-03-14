@@ -94,14 +94,19 @@ const Dashboard = () => {
           appsRes = { data: { results: [] } };
         }
         
-        // Fetch profile for profile views count
+// Fetch profile for profile views count - FIXED
         try {
           const profileRes = await profileAPI.get();
-          if (profileRes.data && profileRes.data.profile_views !== undefined) {
-            setProfileViews(profileRes.data.profile_views);
+          console.log('Profile API response:', profileRes.data);
+          let views = 0;
+          if (profileRes.data) {
+            views = profileRes.data.profile_views ?? (profileRes.data.profile?.profile_views ?? 0);
           }
+          setProfileViews(views);
+          console.log('Set profile views to:', views);
         } catch (e) {
           console.error('Error fetching profile:', e);
+          setProfileViews(0);
         }
       }
       

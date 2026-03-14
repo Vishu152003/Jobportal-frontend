@@ -42,10 +42,12 @@ export const authAPI = {
   updateProfile: (data) => api.patch('/auth/profile/seeker/', data),
   changePassword: (data) => api.post('/auth/change-password/', data),
   getProfile: () => api.get('/auth/profile/seeker/'),
+  getProfileDetail: (id) => api.get(`/auth/profiles/${id}/`),
   blockUser: (userId, blocked) => api.post(`/auth/users/${userId}/block/`, { blocked }),
+
   deleteUser: (userId) => api.delete(`/auth/users/${userId}/delete/`),
   requestPasswordReset: (data) => api.post('/auth/password-reset/', data),
-  resetPassword: (data) => api.post('/auth/password-reset/confirm/', data),
+  resetPassword: (data) => api.post('/auth/password-reset-direct/', data),
 };
 
 // Profile API - For job seeker profile management
@@ -113,8 +115,10 @@ export const applicationsAPI = {
   myApplications: () => api.get('/applications/my_applications/'),
   jobApplicants: (jobId) => api.get(`/applications/job/${jobId}/`),
   myJobApplicants: () => api.get('/applications/my-job-applicants/'),
+  stats: () => api.get('/applications/stats/'),
   updateStatus: (id, status) => api.post(`/applications/${id}/update_status/`, { status }),
   recalculateScores: (jobId) => api.post('/applications/recalculate-scores/', { job_id: jobId }),
+  dashboardStats: () => api.get('/auth/jobseeker-dashboard/'),
 };
 
 // Ideas API
@@ -222,9 +226,11 @@ export const notificationAPI = {
   getUnreadCount: () => api.get('/notifications/unread_count/'),
   markAsRead: (id) => api.post(`/notifications/${id}/mark_read/`),
   markAllAsRead: () => api.post('/notifications/mark_all_read/'),
+  deleteNotification: (id) => api.delete(`/notifications/${id}/`),
   clearAll: () => api.delete('/notifications/clear_all/'),
   getSettings: () => api.get('/notifications/settings/'),
   updateSettings: (data) => api.patch('/notifications/settings/', data),
 };
 
 export default api;
+
